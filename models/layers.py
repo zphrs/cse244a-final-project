@@ -164,7 +164,7 @@ class Attention(nn.Module):
             (batch_size, query_heads, sequence_length, sequence_length),
             dtype=bool,
         )
-        if self.training:
+        if not self.training:
             faiss_indices = []
             for i, batch in enumerate(key):
                 faiss_indices.append([])
@@ -172,7 +172,6 @@ class Attention(nn.Module):
                 for j, head in enumerate(batch):
                     index = brute_force.build(head.view(torch.float32))
                     faiss_batch_indices.append(index)
-                    # print(cp.asarray(neighbors))
 
             for i, batch in enumerate(query):
                 faiss_batch_indices = faiss_indices[i]
@@ -185,8 +184,6 @@ class Attention(nn.Module):
                     )
                     I = cp.asarray(I)
                     D = cp.asarray(D)
-                    # I = k key indices closest to the query, for each query in
-                    # this head. Shape: [sequence_length, k]
                     # Set mask to True for the top-k indices for each query
                     attn_mask[i, j, cp.arange(sequence_length)[:, None], I] = True
                     # print(attn_mask[i, j, 4], D[4], I[4])
