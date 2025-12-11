@@ -1,4 +1,4 @@
-source ~/miniconda3/bin/activate
+# source ~/miniconda3/bin/activate # only if conda is not in your path
 conda activate cse244a
 run_name="pretrain_att_maze30x30_1gpu"
 python pretrain.py \
